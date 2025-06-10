@@ -1,0 +1,11 @@
+Neste projeto, 4 processos serão criados pelo processo pai. Cada processo tentará realizar os acessos à memória RAM, passando esta tarefa para outro processo: "GMV" (talvez possa ser o mesmo processo pai que faz isso.) Então algo que pode ser feito:
+
+1) Preparando o terreno:
+    - Lê os arquivos de acesso e passa a task para o gerenciador de memória virtual.
+
+2) GMV
+    - Após receber a requisição do processo filho x, tenta colocar a página na memória principal. Se conseguir, segue para o proximo processo. 
+
+O que o processo 1 faz? 
+
+    inicializa os processos filhos

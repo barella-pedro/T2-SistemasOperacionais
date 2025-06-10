@@ -1,0 +1,44 @@
+-> cada processo envia um acesso por vez a cada round robin.
+
+Aula de algoritmos:
+
+    ALGORITMO OPT (IDEAL)
+        -serve como regua de comparação para outros algoritmos, pois é impossivel, requer prever o futuro.
+
+    NRU
+        - Coloca todas as paginas  em categorias (referenciada e modificada) - sendo 4 categorias ( 00, 01, 10, 11) - ver no slide para melhor entendimento. A ordem de prioridade é a mostrada acima. 
+        - Sempre que uma pagina Px que foi modificada estiver sendo retirada, deve se copiar para o swap.
+        - Definir esse "tempo" de recente
+
+    FIFO
+        - Tirar pagina na ordem em que foram copiadas para a memoria (PODE CAIR NA PROVA!!!) - sempre tirar a pagina mais antiga na memoria
+        - Na ordem de entrada! E não na ordem de referencia. Por isso ele é meio "burrinho".
+
+    Algoritmo Segunda Chance (Evolução do FIFO)
+        - Nesse caso há utilidade do bit de referencia. Processos que foram referenciados recentemente tem uma "segunda chance" e vão para o inicio da fila. 
+        - So marca que foi referenciado depois (nao marca na primeira vez que ele aparece na memoria) - estranho!
+
+    Not Frequently Used
+        - Usar um contador para ver quais paginas são mais acessadas -> caro incrementar sempre!
+        - esses contadores não diminuem! Ou seja, ela não guarda o comportamento recente da pagina, mas sim total. Ou seja, se um programa usa muito uma pagina e depois usa pouco, esse algoritmo mantem ela lá mesmo assim.
+    
+    Most Frequently Used
+        - tira os mais referenciados
+
+    Algoritmo LRU (Least Recently Used)
+        -Busca pela pagina menos recentemente referenciada. -> mto caro, gasta mta memoria! Para solucionar isso, tem alguma peça de hardware que faz internamente la.
+        -Uma alternativa é criar um contador de tempo para registrar a ultima referência.
+
+    Algoritmo de Envelhecimento(Aging)
+        -usa bits por unidade de tempo(clock)
+
+        
+    Working Set
+        - Conjunto de paginas logicas que aquele processo esta usando naquele momento -> conjunto de paginas logicas referenciadas no intervalo t - delta, t. sendo o delta a working set window.
+        - Isso é util para tentar escolher uma pagina que possivelmente esta na memoria ram mas Não esta no WSet.
+        - Ver o slide 117 depois!
+
+    Algoritmo de Frequencia de Page-Faults.
+        - Dá prioridade para processos com muitos page faults
+        
+    
