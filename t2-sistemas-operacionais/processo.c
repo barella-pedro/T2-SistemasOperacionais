@@ -5,7 +5,7 @@
 #include <signal.h>
 #include "processo.h"
 
-#define N_instrucoes 100
+#define N_instrucoes 10000
 
 
 void testa_arq(FILE* arquivo);

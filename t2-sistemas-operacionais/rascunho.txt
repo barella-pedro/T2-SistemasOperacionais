@@ -9,3 +9,36 @@ Neste projeto, 4 processos serão criados pelo processo pai. Cada processo tenta
 O que o processo 1 faz? 
 
     inicializa os processos filhos
+
+Rounds: 20000
+Page Faults: 17674
+Numero de swaps: 9306
+Tempo de execução: 6.209923 segundos
+
+Rounds: 20000
+Page Faults: 17647
+Numero de swaps: 8952
+Tempo de execução: 5.881078 segundos
+
+Rounds: 2000
+Page Faults: 1748
+Numero de swaps: 874
+Tempo de execução: 0.534159 segundos
+
+Rounds: 2000
+Page Faults: 1755
+Numero de swaps: 923
+Tempo de execução: 0.754248 segundos
+
+
+NRU
+Rounds: 40000
+Page Faults: 35416
+Numero de swaps: 17819
+Tempo de execução: 5.912651 segundos
+
+SECONDCHANCE
+Rounds: 40000
+Page Faults: 35416
+Numero de swaps: 17819
+Tempo de execução: 5.912651 segundos

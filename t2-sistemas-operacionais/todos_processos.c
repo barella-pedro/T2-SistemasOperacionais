@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "processo.h"
 #include <stdbool.h>
+#include <sys/wait.h>
 #include <time.h>
 #include <string.h>
 
@@ -16,7 +17,7 @@ void inicializa_memoria(Q_Memoria *memoria, int tam);
 void print_memoria(Q_Memoria memoria[], int tamanho);
 int select_NRU(Q_Memoria memoria[], int tamanho);
 int select_sec_chance(Q_Memoria memoria[], int vet_sec_chance[], int tam);
-
+int select_clock_chance(Q_Memoria memoria[], int tam);
 //* Pointer da Second Chance
 int pointer;
 
@@ -81,6 +82,7 @@ int main(int argc, char* argv[]){
     int iteracao = 0;
     int p_faults = 0;
     int rounds = 0;
+    int n_swaps = 0;
     srand(time(NULL));
 
     
@@ -112,6 +114,7 @@ int main(int argc, char* argv[]){
             
             kill(pid_list[i], SIGCONT);
             printf("roundrobin do p%d\n", i);
+            sleep(0.9);
             size_t lido = read(pipe_fds[i][0], &inst_atual, sizeof(Instrucao));
             
             if (lido == 0){
@@ -120,10 +123,11 @@ int main(int argc, char* argv[]){
                 processos_ativos--;
                 continue;
             }
-            
+            int status;
+           
+            waitpid(pid_list[i], &status, WUNTRACED);   
             
             printf("Instrucoes: %d, %c\n\n", inst_atual.num_pag, inst_atual.modo);
-            sleep(0.5);
             // kill(pid_list[i], SIGSTOP);
 
             /* Page fault? */
@@ -173,7 +177,8 @@ int main(int argc, char* argv[]){
                     
                     //* Second Chance
                     else if (strcmp(algoritmo, "SECONDCHANCE") == 0){
-                        vitima = select_sec_chance(mem_principal, bits_sec_chance ,NUM_FRAMES);
+                        vitima = select_clock_chance(mem_principal, NUM_FRAMES);
+                        // vitima = select_sec_chance(mem_principal,bits_sec_chance,NUM_FRAMES);
                         printf("Vitima escolhida: %d\n",vitima);
                         printf("Pointer esta em %d\n", pointer);
 
@@ -201,6 +206,7 @@ int main(int argc, char* argv[]){
                     int pag_vit = mem_principal[vitima].end_virtual;
                     if (mem_principal[vitima].mod) {
                         printf("Página suja! Gravando em swap...\n");
+                        n_swaps++;
                     }
 
                     /* limpa tabela da vítima */
@@ -245,19 +251,19 @@ int main(int argc, char* argv[]){
                 }
             }
         rounds++;
-        
-        }
-        
-        /* incrementa iteração e zera R a cada 10 ciclos */
-        
-        //* A principio apenas NRU está utilizando isso (por enquanto)
         iteracao++;
-        if (iteracao > 0 && iteracao % 10 == 0) {
+        
+        if ((iteracao > 0) && (iteracao % 1000 == 0)) {
+        /* incrementa iteração e zera R a cada 10 ciclos */
             printf("Zerando os bits de referência (NRU)....\n");
             for (int k = 0; k < NUM_FRAMES; k++) {
                 mem_principal[k].ref = false;
             }
         }
+        
+        //* A principio apenas NRU está utilizando isso (por enquanto)
+    }
+    
         
         /* mostra estado da RAM */
         print_memoria(mem_principal, NUM_FRAMES);
@@ -266,7 +272,9 @@ int main(int argc, char* argv[]){
     double elapsed = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1e9;
     printf("Rounds: %d\n", rounds);
     printf("Page Faults: %d\n", p_faults);
+    printf("Numero de swaps: %d\n", n_swaps);
     printf("Tempo de execução: %.6f segundos\n", elapsed);
+
 
     return 0;
 }
@@ -363,4 +371,20 @@ int select_sec_chance(Q_Memoria memoria[], int vet_sec_chance[], int tam){
         }
     }
 
+}
+
+int select_clock_chance(Q_Memoria memoria[], int tam) {
+    while (true) {
+        if (memoria[pointer].ref == 0) {
+          
+            int vitima = pointer;
+            pointer = (pointer + 1) % tam;
+            return vitima;
+        }
+        else {
+            
+            memoria[pointer].ref = 0; 
+            pointer = (pointer + 1) % tam; 
+        }
+    }
 }
