@@ -5,6 +5,8 @@
 #include <signal.h>
 #include "processo.h"
 
+#define N_instrucoes 100
+
 
 void testa_arq(FILE* arquivo);
 void cont_handler(int sinal){
@@ -20,7 +22,7 @@ int main(int argc, char* argv[]){
     }
     signal(SIGCONT, cont_handler);
     FILE *arq_instrucoes;
-    Instrucao lista_instrucoes[100];
+    Instrucao lista_instrucoes[N_instrucoes];
     int num_processo = atoi(argv[1]) + 1;
     int pipe_fd = atoi(argv[2]);
     printf("%d\n",pipe_fd);
@@ -45,10 +47,11 @@ int main(int argc, char* argv[]){
     printf("Pausei\n");
     pause(); //espera pelo RoundRobin
 
-    for (i = 0; i <100; i++){//depois criar variavel para substuir o "100"
+    for (i = 0; i <N_instrucoes; i++){//depois criar variavel para substuir o "100"
         write(pipe_fd, &lista_instrucoes[i], sizeof(lista_instrucoes[i]));
         printf("Enviei pro pai a %dº linha!\n", i+1);
-        pause();//pause para evitar que ele envie mais de uma instrução
+        fflush(stdout); 
+        kill(getpid(), SIGSTOP);    // pause para evitar que ele envie mais de uma instrução;
         printf("Depois do Pause\n");
 
     }
