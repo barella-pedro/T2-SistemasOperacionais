@@ -20,6 +20,7 @@ struct quadro_memoria{
     bool ref;
     bool mod;
     bool ativa; //se esta associada a alguma pagina virtual ou nao
+    int conteudo; // Conteudo que o processo escreveu, por convenção o processo 1, escreve 1, o 2 escreve 2 e por aí vai.
     int pid; //id do processo que esta usando a pagina atualmente
     int end_virtual;//Numero na pagina virtual na tabela do processo X
 };
